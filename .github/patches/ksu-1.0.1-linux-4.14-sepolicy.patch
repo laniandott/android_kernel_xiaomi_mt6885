@@ -185,3 +185,22 @@
  	ebitmap_set_bit(sattr, attr->value - 1, 1);
  
  	struct hashtab_node *node;
+
+--- a/drivers/kernelsu/selinux/rules.c
++++ b/drivers/kernelsu/selinux/rules.c
+@@ -19,8 +19,15 @@
+ static struct policydb *get_policydb(void)
+ {
+ 	struct policydb *db;
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 4, 0)
+ 	struct selinux_policy *policy = rcu_dereference(selinux_state.policy);
+ 	db = &policy->policydb;
++#else
++	/* Linux < 5.4: no struct selinux_policy / selinux_state.policy.
++	 * Older kernels keep the policydb inside struct selinux_ss
++	 * (security/selinux/ss/services.h); cezanne's backported 4.14 does. */
++	db = &selinux_state.ss->policydb;
++#endif
+ 	return db;
+ }
+ 
