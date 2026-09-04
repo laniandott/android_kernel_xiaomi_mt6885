@@ -107,6 +107,8 @@ jobs:
       run: |
         curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s ${{ env.KERNELSU_TAG }}
         echo "UPLOADNAME=-KernelSU" >> $GITHUB_ENV
+        # Linux 4.14 has no MODULE_IMPORT_NS macro; strip it from KernelSU source
+        sed -i '/MODULE_IMPORT_NS(VFS_internal_I_am_really_a_filesystem_and_am_NOT_a_driver)/d' drivers/kernelsu/ksu.c
 
     - name: Setup ccache
       uses: hendrikmuhs/ccache-action@v1.2
