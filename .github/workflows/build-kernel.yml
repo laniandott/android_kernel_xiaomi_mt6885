@@ -30,7 +30,7 @@ on:
        KERNELSU_TAG:
          description: 'KernelSU Tag'
          required: true
-         default: 'main'
+         default: 'v1.0.1'
        MAKE_BOOT_IMAGE:
          description: 'Make boot image'
          required: false
@@ -109,6 +109,8 @@ jobs:
         echo "UPLOADNAME=-KernelSU" >> $GITHUB_ENV
         # Linux 4.14 has no MODULE_IMPORT_NS macro; strip it from KernelSU source
         sed -i '/MODULE_IMPORT_NS(VFS_internal_I_am_really_a_filesystem_and_am_NOT_a_driver)/d' drivers/kernelsu/ksu.c
+        # cezanne 4.14 backported current_sid() into security/selinux/include/objsec.h
+        echo 'ccflags-y += -DKSU_COMPAT_HAS_CURRENT_SID' >> drivers/kernelsu/Makefile
 
     - name: Setup ccache
       uses: hendrikmuhs/ccache-action@v1.2
