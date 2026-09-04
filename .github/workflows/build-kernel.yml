@@ -111,6 +111,8 @@ jobs:
         sed -i '/MODULE_IMPORT_NS(VFS_internal_I_am_really_a_filesystem_and_am_NOT_a_driver)/d' drivers/kernelsu/ksu.c
         # cezanne 4.14 backported current_sid() into security/selinux/include/objsec.h
         echo 'ccflags-y += -DKSU_COMPAT_HAS_CURRENT_SID' >> drivers/kernelsu/Makefile
+        # Linux 4.14 policydb uses flex_array and the old filename_trans layout
+        git apply --whitespace=nowarn .github/patches/ksu-1.0.1-linux-4.14-sepolicy.patch
 
     - name: Setup ccache
       uses: hendrikmuhs/ccache-action@v1.2
