@@ -117,6 +117,13 @@ pe_header:
 	 *                                        current RELR displacement
 	 */
 ENTRY(stext)
+	mov	x8, #0x0100
+	movk	x8, #0x4d01, lsl #16
+	mov	w9, #0x314d
+	movk	w9, #0x2121, lsl #16
+	str	w9, [x8]
+	dsb	sy
+	dc	cvac, x8
 	bl	preserve_boot_args
 	bl	el2_setup			// Drop to EL1, w0=cpu_boot_mode
 	adrp	x23, __PHYS_OFFSET
@@ -130,6 +137,13 @@ ENTRY(stext)
 	 * the TCR will have been set.
 	 */
 	bl	__cpu_setup			// initialise processor
+	mov	x8, #0x0104
+	movk	x8, #0x4d01, lsl #16
+	mov	w9, #0x324d
+	movk	w9, #0x2121, lsl #16
+	str	w9, [x8]
+	dsb	sy
+	dc	cvac, x8
 	b	__primary_switch
 ENDPROC(stext)
 
@@ -821,6 +835,13 @@ ENDPROC(__relocate_kernel)
 #endif
 
 __primary_switch:
+	mov	x8, #0x0108
+	movk	x8, #0x4d01, lsl #16
+	mov	w9, #0x334d
+	movk	w9, #0x2121, lsl #16
+	str	w9, [x8]
+	dsb	sy
+	dc	cvac, x8
 #ifdef CONFIG_RANDOMIZE_BASE
 	mov	x19, x0				// preserve new SCTLR_EL1 value
 	mrs	x20, sctlr_el1			// preserve old SCTLR_EL1 value
