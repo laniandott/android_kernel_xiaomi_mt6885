@@ -123,7 +123,6 @@ ENTRY(stext)
 	movk	w9, #0x2121, lsl #16
 	str	w9, [x8]
 	dsb	sy
-	dc	cvac, x8
 	bl	preserve_boot_args
 	bl	el2_setup			// Drop to EL1, w0=cpu_boot_mode
 	adrp	x23, __PHYS_OFFSET
@@ -143,7 +142,6 @@ ENTRY(stext)
 	movk	w9, #0x2121, lsl #16
 	str	w9, [x8]
 	dsb	sy
-	dc	cvac, x8
 	b	__primary_switch
 ENDPROC(stext)
 
@@ -841,7 +839,6 @@ __primary_switch:
 	movk	w9, #0x2121, lsl #16
 	str	w9, [x8]
 	dsb	sy
-	dc	cvac, x8
 #ifdef CONFIG_RANDOMIZE_BASE
 	mov	x19, x0				// preserve new SCTLR_EL1 value
 	mrs	x20, sctlr_el1			// preserve old SCTLR_EL1 value
