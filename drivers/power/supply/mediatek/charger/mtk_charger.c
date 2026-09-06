@@ -1325,6 +1325,7 @@ static int mtk_charger_plug_out(struct charger_manager *info)
 	chr_err("%s\n", __func__);
 	info->chr_type = CHARGER_UNKNOWN;
 	info->charger_thread_polling = false;
+	alarm_try_to_cancel(&info->charger_timer);
 	info->pd_reset = false;
 
 	pdata1->disable_charging_count = 0;
@@ -1799,6 +1800,13 @@ static void mtk_charger_start_timer(struct charger_manager *info)
 	struct timespec time, time_now;
 	ktime_t ktime;
 	int ret = 0;
+
+	if (!mt_charger_plugin() || !charger_online) {
+		alarm_try_to_cancel(&pinfo->charger_timer);
+		info->endtime.tv_sec = 0;
+		info->endtime.tv_nsec = 0;
+		return;
+	}
 
 	/* If the timer was already set, cancel it */
 	ret = alarm_try_to_cancel(&pinfo->charger_timer);
